@@ -9,6 +9,7 @@ import { useBusinesses, useReports, useSites } from '../lib/hooks';
 import { toggleSaved, useLocal } from '../lib/store';
 import { KIND_LABEL, milesBetween, relTime } from '../lib/format';
 import type { Site } from '../lib/types';
+import { sitePhoto } from '../lib/photos';
 
 export default function SiteDetail() {
   const { slug } = useParams();
@@ -37,6 +38,7 @@ function SiteView({ site }: { site: Site }) {
   const latestCurrent = reports.find((r) => r.current);
   const nearby = businesses.filter((b) => milesBetween(site.lat, site.lng, b.lat, b.lng) < 30);
   const surfaceF = c.water.status === 'ok' ? c.water.data.tempF : undefined;
+  const photo = sitePhoto(site);
 
   return (
     <main className="page">
@@ -47,6 +49,12 @@ function SiteView({ site }: { site: Site }) {
           </button>
         }
       />
+      {photo && (
+        <figure className="site-photo">
+          <img src={photo.full} alt={`${site.name}, ${site.area}`} loading="eager" decoding="async" />
+          {photo.credit && <figcaption>Photo: {photo.credit}</figcaption>}
+        </figure>
+      )}
       <section className="stack-10">
         <p className="accent small-strong">{KIND_LABEL[site.kind]} in {site.area}, Florida</p>
         <h1 className="display-lg">{site.name}</h1>

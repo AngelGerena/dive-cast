@@ -25,6 +25,8 @@ export interface Site {
   waterSource: WaterSource;
   tideStation?: { id: string; label: string };
   usgsGauge?: { id: string; label: string };
+  coverUrl?: string;
+  photoCredit?: string;
   isDemo?: boolean;
 }
 

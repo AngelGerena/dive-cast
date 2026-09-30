@@ -37,6 +37,8 @@ export function toSite(r: Row): Site {
           : { type: 'model' },
     tideStation: r.tide_station_id ? { id: String(r.tide_station_id), label: String(r.tide_station_label ?? 'NOAA station') } : undefined,
     usgsGauge: r.usgs_gauge_id ? { id: String(r.usgs_gauge_id), label: String(r.usgs_gauge_label ?? 'USGS gauge') } : undefined,
+    coverUrl: str(r.cover_photo_url),
+    photoCredit: str(r.cover_photo_credit),
     isDemo: Boolean(r.is_demo)
   };
 }

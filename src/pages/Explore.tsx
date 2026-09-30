@@ -7,6 +7,7 @@ import { Icon } from '../components/Icon';
 import { useBusinesses, useSites } from '../lib/hooks';
 import { useLocal } from '../lib/store';
 import { KIND_LABEL } from '../lib/format';
+import { sitePhoto } from '../lib/photos';
 
 type Layer = 'sites' | 'shop' | 'charter' | 'resort';
 const LAYERS: { id: Layer; label: string; shape: string }[] = [
@@ -79,6 +80,7 @@ export default function Explore() {
 
       {pick && (
         <Link to={`/site/${pick.slug}`} className="featured glass">
+          {sitePhoto(pick) && <img className="featured-photo" src={sitePhoto(pick)!.thumb} alt="" loading="lazy" />}
           <span className="featured-title">{pick.name}</span>
           <span className="small muted">{KIND_LABEL[pick.kind]} in {pick.area}, max {pick.maxDepthFt} ft</span>
           <span className="btn btn-light">View conditions</span>
@@ -91,6 +93,11 @@ export default function Explore() {
         <div className="grid-2">
           {sites.map((s) => (
             <Link key={s.id} to={`/site/${s.slug}`} className="site-card glass">
+              {sitePhoto(s) ? (
+                <img className="site-card-photo" src={sitePhoto(s)!.thumb} alt="" loading="lazy" decoding="async" />
+              ) : (
+                <span className={`site-card-photo site-card-empty kind-${s.kind}`} aria-hidden="true">{KIND_LABEL[s.kind]}</span>
+              )}
               <span className="site-card-name">{s.name}</span>
               <span className="tiny muted">{KIND_LABEL[s.kind]}, {s.area}</span>
               <span className="tiny mono">{s.maxDepthFt} ft max</span>
