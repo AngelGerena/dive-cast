@@ -3,7 +3,13 @@ import type { EmergencyCard } from './types';
 
 // Device-only preferences. Account data (profile, dives, certifications, open dives) lives in Supabase.
 
-export type Theme = 'dark' | 'light';
+export type Theme = 'abyss' | 'sonar' | 'reef';
+
+export const THEMES: { id: Theme; name: string; note: string; color: string }[] = [
+  { id: 'abyss', name: 'Abyss', note: 'Deep ocean, glowing cyan', color: '#04121F' },
+  { id: 'sonar', name: 'Sonar', note: 'Dive computer panel', color: '#06131A' },
+  { id: 'reef', name: 'Reef Pro', note: 'Bold and sporty, light', color: '#0B1E44' }
+];
 
 export interface LocalState {
   savedSiteSlugs: string[];
@@ -19,13 +25,17 @@ const EMPTY_EMERGENCY: EmergencyCard = {
 };
 
 function initial(): LocalState {
-  return { savedSiteSlugs: ['blue-heron-bridge', 'ginnie-springs'], emergency: EMPTY_EMERGENCY, theme: 'dark' };
+  return { savedSiteSlugs: ['blue-heron-bridge', 'ginnie-springs'], emergency: EMPTY_EMERGENCY, theme: 'abyss' };
 }
 
 function load(): LocalState {
   try {
     const raw = localStorage.getItem(KEY);
-    return raw ? { ...initial(), ...(JSON.parse(raw) as Partial<LocalState>) } : initial();
+    if (!raw) return initial();
+    const saved = { ...initial(), ...(JSON.parse(raw) as Partial<LocalState>) };
+    // Older builds stored 'dark' or 'light'
+    if (!THEMES.some((t) => t.id === saved.theme)) saved.theme = 'abyss';
+    return saved;
   } catch {
     return initial();
   }
@@ -72,7 +82,8 @@ export function toggleSaved(slug: string) {
 }
 
 export function setTheme(theme: Theme) {
-  document.documentElement.dataset.theme = theme;
-  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', theme === 'dark' ? '#04121F' : '#F6F8FC');
-  setState((s) => ({ ...s, theme }));
+  const look = THEMES.find((t) => t.id === theme) ?? THEMES[0];
+  document.documentElement.dataset.theme = look.id;
+  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', look.color);
+  setState((s) => ({ ...s, theme: look.id }));
 }

@@ -2,7 +2,8 @@ import { Link } from 'react-router-dom';
 import { Icon } from '../components/Icon';
 import { useAuth } from '../lib/auth';
 import { useMyCerts, useMyDives } from '../lib/hooks';
-import { setTheme, useLocal } from '../lib/store';
+import { useLocal } from '../lib/store';
+import { LookPicker } from '../components/LookPicker';
 import { APP_NAME } from '../lib/config';
 
 export default function Profile() {
@@ -10,7 +11,6 @@ export default function Profile() {
   const dives = useMyDives().data ?? [];
   const certsQ = useMyCerts();
   const certs = certsQ.data ?? [];
-  const theme = useLocal((s) => s.theme);
   const hasCard = useLocal((s) => Boolean(s.emergency.fullName));
   const deepest = dives.reduce((a, d) => Math.max(a, d.maxDepthFt), 0);
   const hours = Math.round(dives.reduce((a, d) => a + d.bottomMin, 0) / 60);
@@ -69,11 +69,8 @@ export default function Profile() {
 
       {isAdmin && <Link to="/admin/certifications" className="btn btn-outline">Review certifications</Link>}
 
-      <h2 className="section-title">Appearance</h2>
-      <div className="segmented" role="radiogroup" aria-label="Theme">
-        <button type="button" role="radio" aria-checked={theme === 'dark'} className={theme === 'dark' ? 'is-on' : ''} onClick={() => setTheme('dark')}><Icon name="moon" size={18} /> Abyss</button>
-        <button type="button" role="radio" aria-checked={theme === 'light'} className={theme === 'light' ? 'is-on' : ''} onClick={() => setTheme('light')}><Icon name="sun" size={18} /> Pelagic</button>
-      </div>
+      <h2 className="section-title">App look</h2>
+      <LookPicker />
 
       <button type="button" className="btn btn-ghost" onClick={() => signOut()}>Sign out</button>
       <p className="tiny muted center">{APP_NAME}, version 0.2</p>

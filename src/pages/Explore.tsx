@@ -36,7 +36,7 @@ export default function Explore() {
     () => BUSINESSES.filter((b) => on.includes(b.kind) && (!term || `${b.name} ${b.area} ${b.kind}`.toLowerCase().includes(term))),
     [on, term, BUSINESSES]
   );
-  const tiles = theme === 'dark'
+  const tiles = theme !== 'reef'
     ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
     : 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
   const pick = SITES.find((s) => s.id === selected);

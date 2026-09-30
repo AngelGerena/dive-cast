@@ -1,4 +1,7 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { Icon } from '../components/Icon';
+import { LookPicker } from '../components/LookPicker';
 import { InstallPrompt } from '../components/InstallPrompt';
 import { TideChart } from '../components/TideChart';
 import { RiverCard } from './RiverCard';
@@ -21,20 +24,42 @@ export default function Home() {
   );
   const site = (joined && sites.find((s) => s.id === joined.siteId)) || home(profile?.homeSiteId);
   const firstName = profile?.onboarded ? profile.displayName.split(' ')[0] : '';
+  const [lookOpen, setLookOpen] = useState(false);
 
   return (
     <main className="page">
-      <header className="row-between">
-        <div>
+      <div className="home-band" aria-hidden="true" />
+      <header className="row-between home-head">
+        <div className="grow">
           <p className="muted small">{new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}</p>
-          <h1 className="display-md">{greeting()}{firstName ? `, ${firstName}` : ''}</h1>
+          <h1 className="display-md home-greet">{greeting()}{firstName ? `, ${firstName}` : ''}</h1>
         </div>
-        {session && profile ? (
-          <Link to="/profile" className="avatar" aria-label="Open profile">{profile.initials}</Link>
-        ) : (
-          <Link to="/profile" className="btn btn-outline btn-sm">Sign in</Link>
-        )}
+        <div className="row gap-8">
+          <button type="button" className="icon-btn" aria-label="Change app look" onClick={() => setLookOpen(true)}>
+            <Icon name="palette" size={20} />
+          </button>
+          {session && profile ? (
+            <Link to="/profile" className="avatar" aria-label="Open profile">{profile.initials}</Link>
+          ) : (
+            <Link to="/profile" className="btn btn-outline btn-sm">Sign in</Link>
+          )}
+        </div>
       </header>
+
+      {lookOpen && (
+        <div className="sheet-backdrop" onClick={() => setLookOpen(false)}>
+          <div className="sheet" role="dialog" aria-label="App look" onClick={(e) => e.stopPropagation()}>
+            <div className="sheet-head">
+              <h2 className="display-sm">App look</h2>
+              <button type="button" className="icon-btn" aria-label="Close" onClick={() => setLookOpen(false)}>
+                <Icon name="close" />
+              </button>
+            </div>
+            <LookPicker />
+            <p className="tiny muted">You can also change this anytime in Profile.</p>
+          </div>
+        </div>
+      )}
 
       <InstallPrompt />
 

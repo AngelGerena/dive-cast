@@ -1,7 +1,8 @@
-/* Diver's Companion design tokens. Names follow the Finesse token contract; values are this product's.
-   Abyss (dark) is the default. Pelagic (light) is the alternate theme. No raw colors outside these blocks. */
+/* DiveCast design tokens. Names follow the Finesse token contract; values are this product's.
+   Three looks the diver can switch between: Abyss (default), Sonar and Reef Pro.
+   No raw colors outside these blocks. */
 :root,
-:root[data-theme='dark'] {
+:root[data-theme='abyss'] {
   --brand: #0C3A57;
   --brand-soft: #123A4F;
   --brand-deep: #020A12;
@@ -23,8 +24,6 @@
   --glass: rgba(255, 255, 255, 0.07);
   --glass-edge: rgba(255, 255, 255, 0.16);
   --glass-shine: rgba(255, 255, 255, 0.22);
-  --glow-a: rgba(21, 102, 150, 0.55);
-  --glow-b: rgba(62, 230, 208, 0.1);
   --text: #E6F4FA;
   --muted: #8FC0D4;
   --ok: #4ADE9A;
@@ -39,53 +38,171 @@
   --cert-b: #0A2238;
   --shadow: 0 18px 40px rgba(0, 8, 20, 0.35);
   --nav-bg: rgba(2, 10, 18, 0.9);
+  --backdrop: radial-gradient(120% 55% at 50% 0%, rgba(21, 102, 150, 0.55) 0%, transparent 60%), radial-gradient(60% 40% at 90% 30%, rgba(62, 230, 208, 0.1) 0%, transparent 70%);
+  --band: transparent;
+  --band-text: var(--text);
+  --band-muted: var(--muted);
+  --hero-bg: var(--accent-soft);
+  --hero-border: 1px solid rgba(62, 230, 208, 0.3);
+  --hero-shadow: none;
+  --hero-text: var(--text);
+  --hero-muted: var(--muted);
+  --hero-num: var(--accent);
+  --plus-bg: var(--accent);
+  --plus-fg: var(--on-accent);
+  --plus-radius: 50%;
+  --plus-shadow: 0 0 28px rgba(62, 230, 208, 0.45);
   --font-display: 'Syne', 'Avenir Next', sans-serif;
   --font-ui: 'DM Sans Variable', 'DM Sans', 'Helvetica Neue', sans-serif;
   --font-data: 'JetBrains Mono', ui-monospace, monospace;
+  --font-num: var(--font-display);
+  --display-style: normal;
+  --display-weight: 800;
+  --display-scale: 1;
   --radius: 22px;
   --radius-sm: 14px;
+  --radius-tile: 16px;
+  --radius-hero: 26px;
+  --radius-btn: 16px;
+  --radius-pill: 22px;
+  --theme-color: #04121F;
   --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
   color-scheme: dark;
 }
 
-:root[data-theme='light'] {
-  --brand: #0047FF;
-  --brand-soft: #E8EEFF;
-  --brand-deep: #F6F8FC;
-  --accent: #0047FF;
-  --accent-soft: rgba(0, 71, 255, 0.08);
-  --accent-deep: #0033B8;
+/* Sonar: dive-computer instrument panel */
+:root[data-theme='sonar'] {
+  --brand: #0D2530;
+  --brand-soft: #10262F;
+  --brand-deep: #030B0F;
+  --accent: #FFB547;
+  --accent-soft: rgba(255, 181, 71, 0.1);
+  --accent-deep: #E09422;
+  --on-accent: #06131A;
+  --heat: #6FD3E6;
+  --heat-soft: rgba(111, 211, 230, 0.08);
+  --on-heat: #06131A;
+  --social: #FFB547;
+  --social-soft: rgba(255, 181, 71, 0.12);
+  --on-social: #06131A;
+  --surface: #06131A;
+  --surface-card: #0B1F27;
+  --surface-raised: #0B1F27;
+  --surface-input: #0B1F27;
+  --line: #1F3D47;
+  --glass: #0B1F27;
+  --glass-edge: #1F3D47;
+  --glass-shine: rgba(255, 255, 255, 0);
+  --text: #E4F1F4;
+  --muted: #7FA3AD;
+  --ok: #7FE3A8;
+  --ok-soft: rgba(127, 227, 168, 0.12);
+  --warn: #FFB547;
+  --warn-soft: rgba(255, 181, 71, 0.12);
+  --danger: #FF8A7A;
+  --danger-soft: rgba(255, 138, 122, 0.12);
+  --info: #6FD3E6;
+  --info-soft: rgba(111, 211, 230, 0.1);
+  --cert-a: #123846;
+  --cert-b: #081A21;
+  --shadow: none;
+  --nav-bg: #06131A;
+  --backdrop: linear-gradient(#10262F 1px, transparent 1px) 0 0 / 100% 120px, linear-gradient(90deg, #10262F 1px, transparent 1px) 0 0 / 25% 100%, radial-gradient(circle at 85% 22%, rgba(255, 181, 71, 0.07) 0, rgba(255, 181, 71, 0.07) 70px, transparent 71px, transparent 118px, rgba(255, 181, 71, 0.05) 119px, rgba(255, 181, 71, 0.05) 120px, transparent 121px);
+  --band: transparent;
+  --band-text: var(--text);
+  --band-muted: var(--muted);
+  --hero-bg: linear-gradient(180deg, #0D2530 0%, #081A21 100%);
+  --hero-border: 1px solid #FFB547;
+  --hero-shadow: none;
+  --hero-text: var(--text);
+  --hero-muted: var(--muted);
+  --hero-num: #FFB547;
+  --plus-bg: #FFB547;
+  --plus-fg: #06131A;
+  --plus-radius: 12px;
+  --plus-shadow: 0 0 0 4px rgba(255, 181, 71, 0.15);
+  --font-display: 'Chakra Petch', 'Avenir Next', sans-serif;
+  --font-ui: 'IBM Plex Sans', 'Helvetica Neue', sans-serif;
+  --font-data: 'JetBrains Mono', ui-monospace, monospace;
+  --font-num: 'JetBrains Mono', ui-monospace, monospace;
+  --display-style: normal;
+  --display-weight: 700;
+  --display-scale: 1;
+  --radius: 10px;
+  --radius-sm: 8px;
+  --radius-tile: 8px;
+  --radius-hero: 10px;
+  --radius-btn: 8px;
+  --radius-pill: 8px;
+  --theme-color: #06131A;
+  color-scheme: dark;
+}
+
+/* Reef Pro: sporty, light body under a navy band */
+:root[data-theme='reef'] {
+  --brand: #0B1E44;
+  --brand-soft: #E3E9F4;
+  --brand-deep: #0B1E44;
+  --accent: #C9361B;
+  --accent-soft: rgba(201, 54, 27, 0.08);
+  --accent-deep: #9E2A14;
   --on-accent: #FFFFFF;
-  --heat: #A65A00;
-  --heat-soft: rgba(166, 90, 0, 0.08);
+  --heat: #C9361B;
+  --heat-soft: #FFF1EC;
   --on-heat: #FFFFFF;
   --social: #C9361B;
   --social-soft: rgba(201, 54, 27, 0.08);
   --on-social: #FFFFFF;
-  --surface: #F6F8FC;
+  --surface: #EEF2F8;
   --surface-card: #FFFFFF;
   --surface-raised: #FFFFFF;
   --surface-input: #FFFFFF;
-  --line: #E1E6EF;
+  --line: #DCE3EF;
   --glass: #FFFFFF;
-  --glass-edge: #E1E6EF;
+  --glass-edge: #DCE3EF;
   --glass-shine: rgba(255, 255, 255, 0);
-  --glow-a: rgba(0, 71, 255, 0);
-  --glow-b: rgba(0, 71, 255, 0);
-  --text: #0A1628;
-  --muted: #536074;
+  --text: #0B1E44;
+  --muted: #4A5A7E;
   --ok: #0F7A4F;
   --ok-soft: rgba(15, 122, 79, 0.1);
   --warn: #A65A00;
   --warn-soft: rgba(166, 90, 0, 0.1);
   --danger: #B42318;
   --danger-soft: rgba(180, 35, 24, 0.08);
-  --info: #0B6E8A;
-  --info-soft: rgba(11, 110, 138, 0.08);
-  --cert-a: #0047FF;
-  --cert-b: #001F75;
-  --shadow: 0 12px 30px rgba(10, 22, 40, 0.07);
-  --nav-bg: rgba(255, 255, 255, 0.94);
+  --info: #1D4ED8;
+  --info-soft: rgba(29, 78, 216, 0.08);
+  --cert-a: #0B1E44;
+  --cert-b: #1B3A7A;
+  --shadow: 0 10px 26px rgba(11, 30, 68, 0.08);
+  --nav-bg: rgba(255, 255, 255, 0.96);
+  --backdrop: none;
+  --band: #0B1E44;
+  --band-text: #FFFFFF;
+  --band-muted: #B8C4DC;
+  --hero-bg: #FF6B4A;
+  --hero-border: none;
+  --hero-shadow: 0 18px 40px rgba(201, 54, 27, 0.3);
+  --hero-text: #1E0700;
+  --hero-muted: #4A1508;
+  --hero-num: #1E0700;
+  --plus-bg: #0B1E44;
+  --plus-fg: #FFFFFF;
+  --plus-radius: 16px;
+  --plus-shadow: 0 8px 20px rgba(11, 30, 68, 0.3);
+  --font-display: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+  --font-ui: 'Barlow', 'Helvetica Neue', sans-serif;
+  --font-data: 'JetBrains Mono', ui-monospace, monospace;
+  --font-num: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+  --display-style: italic;
+  --display-weight: 800;
+  --display-scale: 1.22;
+  --radius: 18px;
+  --radius-sm: 12px;
+  --radius-tile: 16px;
+  --radius-hero: 22px;
+  --radius-btn: 12px;
+  --radius-pill: 12px;
+  --theme-color: #0B1E44;
   color-scheme: light;
 }
 
@@ -111,8 +228,6 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .app { position: relative; min-height: 100dvh; overflow-x: hidden; }
 .glow {
   position: fixed; inset: 0; pointer-events: none; z-index: 0;
-  background: radial-gradient(120% 55% at 50% 0%, var(--glow-a) 0%, transparent 60%),
-    radial-gradient(60% 40% at 90% 30%, var(--glow-b) 0%, transparent 70%);
 }
 .page {
   position: relative; z-index: 1;
@@ -417,3 +532,64 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .card-photo { display: block; border-radius: 12px; overflow: hidden; border: 1px solid var(--line); }
 .card-photo img { display: block; width: 100%; height: 140px; object-fit: cover; }
 .form input[type='file'] { padding: 10px; }
+
+/* Theme hooks: shared rules read the look from the tokens above */
+.glow { background: var(--backdrop); }
+.display-lg, .display-md, .display-sm, .section-title, .hero-title, .od-title, .featured-title, .log-site, .cert-level {
+  font-style: var(--display-style);
+  font-weight: var(--display-weight);
+}
+.display-lg { font-size: calc(clamp(2.2rem, 9vw, 2.9rem) * var(--display-scale)); }
+.display-md { font-size: calc(clamp(1.6rem, 6.5vw, 2rem) * var(--display-scale)); }
+.display-sm { font-size: calc(1.3rem * var(--display-scale)); }
+.section-title { font-size: calc(1.15rem * var(--display-scale)); }
+.hero-title { font-size: calc(clamp(1.7rem, 7.5vw, 2.05rem) * var(--display-scale)); }
+.od-title { font-size: calc(1.3rem * var(--display-scale)); }
+.hero-number, .tile-value, .fact-value, .stat-value, .date-num, .big-num { font-family: var(--font-num); }
+.hero-number { font-style: var(--display-style); }
+.tile-value, .fact-value, .stat-value, .date-num { font-style: var(--display-style); }
+.hero-card { background: var(--hero-bg); border: var(--hero-border); box-shadow: var(--hero-shadow); border-radius: var(--radius-hero); }
+.hero-card .hero-title { color: var(--hero-text); }
+.hero-card > p, .hero-meta { color: var(--hero-muted); }
+.hero-meta strong { color: var(--hero-text); }
+.hero-number { color: var(--hero-num); }
+.tile { border-radius: var(--radius-tile); }
+.card, .od-card { border-radius: var(--radius); }
+.btn { border-radius: var(--radius-btn); }
+.btn-sm, .chip, .search { border-radius: var(--radius-pill); }
+.nav-dive { background: var(--plus-bg); color: var(--plus-fg); border-radius: var(--plus-radius); box-shadow: var(--plus-shadow); }
+.avatar { border-radius: var(--plus-radius); }
+.avatar-lg { border-radius: 50%; }
+:root[data-theme='sonar'] .tile-label, :root[data-theme='sonar'] .tile-foot { font-family: var(--font-data); }
+
+/* Reef Pro navy band behind the Home header */
+.home-band { position: absolute; left: 0; right: 0; top: 0; height: 190px; background: var(--band); z-index: -1; }
+.home-head { color: var(--band-text); }
+.home-head .muted { color: var(--band-muted); }
+:root[data-theme='reef'] .home-head .avatar { background: #FF6B4A; color: #1E0700; border-color: transparent; }
+:root[data-theme='reef'] .home-head .btn-outline { color: #FFFFFF; border-color: #FFFFFF; }
+:root[data-theme='reef'] .home-head .icon-btn { background: rgba(255, 255, 255, 0.12); border-color: rgba(255, 255, 255, 0.3); color: #FFFFFF; }
+
+/* Look picker */
+.look-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.look-option {
+  min-height: 132px; padding: 8px; border-radius: 16px; cursor: pointer;
+  border: 2px solid var(--line); background: var(--surface-card); color: var(--text);
+  display: flex; flex-direction: column; gap: 8px; text-align: left; font: inherit;
+}
+.look-option.is-on { border-color: var(--accent); }
+.look-option strong { font-size: 0.9rem; display: flex; align-items: center; gap: 6px; }
+.look-swatch { height: 72px; border-radius: 10px; position: relative; overflow: hidden; }
+.look-swatch span { position: absolute; }
+.look-abyss { background: radial-gradient(120% 90% at 50% 0%, #0C3A57, #04121F 70%); }
+.look-abyss .s1 { left: 10px; top: 12px; font: 800 26px/1 'Syne', sans-serif; color: #3EE6D0; }
+.look-abyss .s2 { right: 10px; bottom: 10px; width: 22px; height: 22px; border-radius: 50%; background: #3EE6D0; }
+.look-sonar { background: #06131A; background-image: linear-gradient(#10262F 1px, transparent 1px), linear-gradient(90deg, #10262F 1px, transparent 1px); background-size: 100% 18px, 18px 100%; border: 1px solid #FFB547; }
+.look-sonar .s1 { left: 10px; top: 12px; font: 700 22px/1 'JetBrains Mono', monospace; color: #FFB547; }
+.look-sonar .s2 { right: 10px; bottom: 10px; width: 22px; height: 22px; border-radius: 6px; background: #FFB547; }
+.look-reef { background: linear-gradient(180deg, #0B1E44 0 45%, #EEF2F8 45%); }
+.look-reef .s1 { left: 8px; top: 16px; width: 58%; height: 38px; border-radius: 8px; background: #FF6B4A; }
+.look-reef .s2 { right: 10px; bottom: 10px; width: 22px; height: 22px; border-radius: 7px; background: #0B1E44; }
+.look-note { font-size: 0.72rem; color: var(--muted); }
+
+.home-greet { font-size: calc(1.45rem * var(--display-scale)); }
