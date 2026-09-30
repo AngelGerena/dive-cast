@@ -2,7 +2,7 @@ import type { Site } from './types';
 
 // Photos bundled with the app under /images/sites/<slug>.jpg (plus a -thumb.jpg).
 // A cover_photo_url set on the site in Supabase takes priority over these.
-const BUNDLED = new Set(['blue-grotto', 'breakers-reef', 'ginnie-springs', 'peanut-island', 'molasses-reef', 'devils-den']);
+const BUNDLED = new Set(['blue-heron-bridge', 'blue-grotto', 'breakers-reef', 'ginnie-springs', 'peanut-island', 'molasses-reef', 'devils-den', 'spiegel-grove']);
 
 export interface SitePhoto {
   full: string;
