@@ -36,9 +36,12 @@ export default function Explore() {
     () => BUSINESSES.filter((b) => on.includes(b.kind) && (!term || `${b.name} ${b.area} ${b.kind}`.toLowerCase().includes(term))),
     [on, term, BUSINESSES]
   );
-  const tiles = theme !== 'reef'
-    ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
-    : 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
+  // CARTO basemaps need a free key (VITE_CARTO_KEY). Without one, fall back to standard OpenStreetMap tiles.
+  const cartoKey = import.meta.env.VITE_CARTO_KEY as string | undefined;
+  const tiles = cartoKey
+    ? `https://{s}.basemaps.cartocdn.com/rastertiles/${theme === 'reef' ? 'light_all' : 'dark_all'}/{z}/{x}/{y}{r}.png?key=${cartoKey}`
+    : 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
+  const attribution = cartoKey ? '&copy; OpenStreetMap contributors &copy; CARTO' : '&copy; OpenStreetMap contributors';
   const pick = SITES.find((s) => s.id === selected);
 
   const toggle = (id: Layer) => setOn((cur) => (cur.includes(id) ? cur.filter((x) => x !== id) : [...cur, id]));
@@ -64,7 +67,7 @@ export default function Explore() {
 
       <div className="map-frame">
         <MapContainer center={[27.6, -81.6]} zoom={6} scrollWheelZoom={false} style={{ height: '100%', width: '100%' }} attributionControl ref={(m) => { m?.attributionControl.setPrefix(false); }}>
-          <TileLayer url={tiles} attribution='&copy; OpenStreetMap contributors &copy; CARTO' />
+          <TileLayer key={tiles} url={tiles} attribution={attribution} />
           {sites.map((s) => (
             <Marker key={s.id} position={[s.lat, s.lng]} icon={icon('circle', s.id === selected)} eventHandlers={{ click: () => setSelected(s.id) }} title={s.name} />
           ))}
