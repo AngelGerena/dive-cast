@@ -60,8 +60,54 @@ export async function fetchBusinesses(): Promise<Business[]> {
   fail(error);
   return (data ?? []).map((r) => ({
     id: r.id, name: r.name, kind: r.kind, area: r.area, lat: r.lat, lng: r.lng,
-    offer: r.offer ?? undefined, claimed: Boolean(r.claimed_by), isDemo: r.is_demo
+    offer: r.offer ?? undefined, address: r.address ?? undefined, phone: r.phone ?? undefined,
+    website: r.website ?? undefined, pinVerified: Boolean(r.pin_verified),
+    source: r.source ?? 'manual', osmId: r.osm_id ?? undefined,
+    claimed: Boolean(r.claimed_by), isDemo: r.is_demo
   }));
+}
+
+export interface BusinessInput {
+  name: string;
+  kind: Business['kind'];
+  area: string;
+  address?: string;
+  lat: number;
+  lng: number;
+  phone?: string;
+  website?: string;
+  offer?: string;
+}
+
+export async function saveBusiness(b: BusinessInput, id?: string) {
+  const row = {
+    name: b.name.trim(), kind: b.kind, area: b.area.trim(), address: b.address?.trim() || null,
+    lat: b.lat, lng: b.lng, phone: b.phone?.trim() || null, website: b.website?.trim() || null,
+    offer: b.offer?.trim() || null, pin_verified: true, is_demo: false
+  };
+  const { error } = id ? await supabase.from('businesses').update(row).eq('id', id) : await supabase.from('businesses').insert(row);
+  fail(error);
+}
+
+export async function updateBusinessPin(id: string, lat: number, lng: number) {
+  const { error } = await supabase.from('businesses').update({ lat, lng, pin_verified: true }).eq('id', id);
+  fail(error);
+}
+
+export async function deleteBusiness(id: string) {
+  const { error } = await supabase.from('businesses').delete().eq('id', id);
+  fail(error);
+}
+
+// Free OpenStreetMap geocoder, used only from the admin screen (light use, one lookup per tap).
+export async function geocode(query: string): Promise<{ lat: number; lng: number; label: string } | null> {
+  const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=us&q=${encodeURIComponent(query)}`, {
+    headers: { Accept: 'application/json' }
+  });
+  if (!res.ok) throw new Error('Address lookup is not responding. Tap the map to place the pin instead.');
+  const list = (await res.json()) as { lat: string; lon: string; display_name: string }[];
+  if (!list.length) return null;
+  return { lat: parseFloat(list[0].lat), lng: parseFloat(list[0].lon), label: list[0].display_name };
 }
 
 // Condition reports ------------------------------------------------------

@@ -68,6 +68,7 @@ export default function Profile() {
       <Link to="/emergency" className="btn btn-alert"><Icon name="shield" size={20} /> {hasCard ? 'Emergency card, saved offline' : 'Set up your emergency card'}</Link>
 
       {isAdmin && <Link to="/admin/certifications" className="btn btn-outline">Review certifications</Link>}
+      {isAdmin && <Link to="/admin/businesses" className="btn btn-outline">Manage businesses</Link>}
 
       <h2 className="section-title">App look</h2>
       <LookPicker />

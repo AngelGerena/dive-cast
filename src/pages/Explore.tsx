@@ -60,7 +60,7 @@ export default function Explore() {
       <div className="chip-row" role="group" aria-label="Map layers">
         {LAYERS.map((l) => (
           <button key={l.id} type="button" className={`chip chip-toggle${on.includes(l.id) ? ' is-on' : ''}`} aria-pressed={on.includes(l.id)} onClick={() => toggle(l.id)}>
-            <span className={`legend legend-${l.shape}`} aria-hidden="true" />
+            {on.includes(l.id) ? <Icon name="check" size={15} stroke={2.6} /> : <span className={`legend legend-${l.shape}`} aria-hidden="true" />}
             {l.label}
           </button>
         ))}
@@ -117,15 +117,22 @@ export default function Explore() {
           <h2 className="section-title">Shops, charters and resorts</h2>
           {biz.map((b) => (
             <div key={b.id} className={`biz glass${b.offer ? ' has-offer' : ''}`}>
-              <div>
+              <div className="stack-4">
                 <strong>{b.name}</strong>
-                <p className="tiny muted">{b.kind === 'shop' ? 'Dive shop' : b.kind === 'charter' ? 'Boat charter' : 'Dive resort'} in {b.area}{b.isDemo ? ', example listing' : ''}</p>
+                <p className="tiny muted">{b.kind === 'shop' ? 'Dive shop' : b.kind === 'charter' ? 'Boat charter' : 'Dive resort'} in {b.area}</p>
+                {b.address && <p className="tiny muted">{b.address}</p>}
                 {b.offer && <p className="small offer">{b.offer}</p>}
+                <div className="row biz-links">
+                  {b.phone && <a className="link" href={`tel:${b.phone.replace(/[^\d+]/g, '')}`}>Call</a>}
+                  {b.website && <a className="link" href={b.website} target="_blank" rel="noreferrer">Website</a>}
+                  <a className="link" href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(b.address ?? `${b.lat},${b.lng}`)}`} target="_blank" rel="noreferrer">Directions</a>
+                </div>
               </div>
               {b.claimed ? <span className="tag tag-ok">Claimed</span> : <span className="tag">Unclaimed</span>}
             </div>
           ))}
           <p className="tiny muted">Own a dive business? Claiming a listing is free and lets you post offers for divers.</p>
+          {biz.some((b) => b.source === 'osm') && <p className="osm-credit">Some listings &copy; OpenStreetMap contributors, ODbL.</p>}
         </section>
       )}
     </main>

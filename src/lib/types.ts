@@ -40,6 +40,12 @@ export interface Business {
   lat: number;
   lng: number;
   offer?: string;
+  address?: string;
+  phone?: string;
+  website?: string;
+  pinVerified?: boolean;
+  source?: 'manual' | 'osm';
+  osmId?: string;
   claimed: boolean;
   isDemo?: boolean;
 }

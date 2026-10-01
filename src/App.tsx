@@ -13,6 +13,7 @@ import Profile from './pages/Profile';
 import Onboarding from './pages/Onboarding';
 import AddCertification from './pages/AddCertification';
 import ReviewCertifications from './pages/admin/ReviewCertifications';
+import ManageBusinesses from './pages/admin/ManageBusinesses';
 import Emergency from './pages/Emergency';
 import { getState, setTheme } from './lib/store';
 import { isConfigured } from './lib/supabase';
@@ -50,6 +51,7 @@ export default function App() {
           <Route path="/profile/certification" element={<AddCertification />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/admin/certifications" element={<ReviewCertifications />} />
+          <Route path="/admin/businesses" element={<ManageBusinesses />} />
         </Route>
         <Route path="*" element={<Home />} />
       </Routes>

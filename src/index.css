@@ -609,3 +609,15 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .site-card-empty.kind-reef, .site-card-empty.kind-shore { background: linear-gradient(160deg, #3FA7C9, #0A4E86); color: #E6F4FA; }
 .featured-photo { width: calc(100% + 36px); margin: -18px -18px 6px; height: 150px; object-fit: cover; display: block; border-radius: 26px 26px 0 0; }
 .featured { overflow: hidden; }
+
+/* Layer chips: clear on and off states */
+.chip-toggle:not(.is-on) { opacity: 0.62; border-style: dashed; }
+.chip-toggle.is-on svg { flex: none; }
+/* Admin business list */
+.biz-row { width: 100%; min-height: 64px; display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: var(--radius); border: 1px solid var(--line); background: var(--surface-card); color: var(--text); text-align: left; font: inherit; cursor: pointer; }
+.tag-warn { background: var(--warn-soft); color: var(--warn); border-color: transparent; }
+.map-frame-sm { height: 280px; }
+.biz-links { flex-wrap: wrap; gap: 14px; }
+
+.osm-preview { margin: 0; padding-left: 18px; max-height: 220px; overflow-y: auto; font-size: 0.85rem; display: flex; flex-direction: column; gap: 4px; }
+.osm-credit { font-size: 0.72rem; color: var(--muted); }
