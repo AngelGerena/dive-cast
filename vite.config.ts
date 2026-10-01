@@ -41,7 +41,7 @@ export default defineConfig({
           },
           {
             urlPattern: ({ url }) =>
-              ['api.weather.gov', 'api.tidesandcurrents.noaa.gov', 'marine-api.open-meteo.com', 'waterservices.usgs.gov'].includes(url.hostname),
+              ['api.weather.gov', 'api.tidesandcurrents.noaa.gov', 'marine-api.open-meteo.com', 'api.open-meteo.com', 'waterservices.usgs.gov'].includes(url.hostname),
             handler: 'NetworkFirst',
             options: { cacheName: 'conditions', networkTimeoutSeconds: 6, expiration: { maxEntries: 200, maxAgeSeconds: 60 * 60 * 24 } }
           }

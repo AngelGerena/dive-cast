@@ -81,7 +81,7 @@ function SiteView({ site }: { site: Site }) {
         <div className="tile">
           <span className="tile-label"><Icon name="wind" size={16} /> Air</span>
           <span className="tile-value">{c.air.status === 'ok' ? `${c.air.data.tempF}°F` : '--'}</span>
-          <span className="tile-foot">{c.air.status === 'ok' ? `${c.air.data.summary}, wind ${c.air.data.wind}` : c.air.status === 'loading' ? 'Loading' : 'NWS not responding'}</span>
+          <span className="tile-foot">{c.air.status === 'ok' ? `${c.air.data.summary}, wind ${c.air.data.wind}` : c.air.status === 'loading' ? 'Loading' : 'Weather not available right now'}</span>
         </div>
         <div className="tile">
           <span className="tile-label"><Icon name="eye" size={16} /> Visibility</span>

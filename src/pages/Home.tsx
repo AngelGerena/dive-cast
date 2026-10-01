@@ -123,7 +123,7 @@ function SiteHero({ site, nextDive }: { site: Site; nextDive?: string }) {
         <div className="tile">
           <span className="tile-label">Air</span>
           <span className="tile-value">{c.air.status === 'ok' ? `${c.air.data.tempF}°` : '--'}</span>
-          <span className="tile-foot">{c.air.status === 'ok' ? c.air.data.summary : 'NWS forecast'}</span>
+          <span className="tile-foot">{c.air.status === 'ok' ? c.air.data.summary : c.air.status === 'loading' ? 'Loading' : 'Not available'}</span>
         </div>
         <div className="tile tile-heat">
           <span className="tile-label">{atDepth ? `At ${atDepth.depthFt} ft` : 'At depth'}</span>

@@ -54,18 +54,63 @@ function coopsTime(t: string) {
 
 const COOPS = 'https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?units=english&time_zone=lst_ldt&format=json&application=divers_companion';
 
-export interface Air { tempF: number; wind: string; summary: string }
+export interface Air { tempF: number; wind: string; summary: string; source: string }
 export interface WaterTemp { tempF: number; source: string; observedAt: number; kind: 'station' | 'model' | 'spring' }
 export interface Tides { hilo: { t: number; ft: number; type: 'H' | 'L' }[]; hourly: { t: number; ft: number }[] }
 export interface Marine { waveFt: number | null }
 export interface River { latestFt: number; minFt: number; maxFt: number; position: number; observedAt: number; label: string }
 
+// Open-Meteo weather codes, reduced to short plain-English summaries
+function weatherSummary(code: number): string {
+  if (code === 0) return 'Clear';
+  if (code <= 2) return 'Partly cloudy';
+  if (code === 3) return 'Cloudy';
+  if (code === 45 || code === 48) return 'Fog';
+  if (code >= 51 && code <= 57) return 'Drizzle';
+  if (code >= 61 && code <= 67) return 'Rain';
+  if (code >= 80 && code <= 82) return 'Showers';
+  if (code >= 95) return 'Thunderstorms';
+  return 'Mixed conditions';
+}
+
+function compass(deg: number): string {
+  const dirs = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
+  return dirs[Math.round(((deg % 360) / 45)) % 8];
+}
+
+async function getJsonRetry(url: string, tries = 2) {
+  let last: unknown;
+  for (let i = 0; i < tries; i++) {
+    try {
+      return await getJson(url);
+    } catch (e) {
+      last = e;
+      await new Promise((r) => setTimeout(r, 600));
+    }
+  }
+  throw last;
+}
+
+// Air: National Weather Service first. NWS has no land forecast grid for offshore points
+// (reefs and wrecks) and its servers sometimes return errors, so fall back to Open-Meteo.
 export function fetchAir(site: Site) {
-  return cached<Air>(`air:${site.id}`, async () => {
-    const point = await getJson(`https://api.weather.gov/points/${site.lat.toFixed(4)},${site.lng.toFixed(4)}`);
-    const hourly = await getJson(point.properties.forecastHourly);
-    const p = hourly.properties.periods[0];
-    return { tempF: p.temperature, wind: `${p.windDirection} ${p.windSpeed}`, summary: p.shortForecast };
+  return cached<Air>(`air2:${site.id}`, async () => {
+    try {
+      const point = await getJsonRetry(`https://api.weather.gov/points/${site.lat.toFixed(4)},${site.lng.toFixed(4)}`);
+      const hourly = await getJsonRetry(point.properties.forecastHourly);
+      const p = hourly.properties.periods[0];
+      return { tempF: p.temperature, wind: `${p.windDirection} ${p.windSpeed}`, summary: p.shortForecast, source: 'NWS forecast' };
+    } catch {
+      const j = await getJson(`https://api.open-meteo.com/v1/forecast?latitude=${site.lat}&longitude=${site.lng}&current=temperature_2m,weather_code,wind_speed_10m,wind_direction_10m&temperature_unit=fahrenheit&wind_speed_unit=mph&timezone=auto`);
+      const c = j.current;
+      if (!c || typeof c.temperature_2m !== 'number') throw new Error('No weather for this spot');
+      return {
+        tempF: Math.round(c.temperature_2m),
+        wind: `${compass(c.wind_direction_10m ?? 0)} ${Math.round(c.wind_speed_10m ?? 0)} mph`,
+        summary: weatherSummary(c.weather_code ?? -1),
+        source: 'Weather model'
+      };
+    }
   });
 }
 
