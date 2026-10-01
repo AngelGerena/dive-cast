@@ -621,3 +621,10 @@ button, input, select, textarea { font: inherit; color: inherit; }
 
 .osm-preview { margin: 0; padding-left: 18px; max-height: 220px; overflow-y: auto; font-size: 0.85rem; display: flex; flex-direction: column; gap: 4px; }
 .osm-credit { font-size: 0.72rem; color: var(--muted); }
+
+/* Selected pin card on Explore */
+.featured { position: relative; }
+.featured-close { position: absolute; top: 10px; right: 10px; z-index: 2; }
+.featured-kind { display: flex; align-items: center; gap: 8px; font-size: 0.82rem; font-weight: 600; color: var(--muted); padding-right: 52px; }
+.featured .biz-links { margin-top: 4px; }
+.featured.has-offer { border-color: color-mix(in srgb, var(--heat) 50%, transparent); }
