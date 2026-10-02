@@ -3,7 +3,8 @@ import { MapContainer, Marker, TileLayer, useMapEvents, useMap } from 'react-lea
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { PageHeader } from '../../components/PageHeader';
-import { deleteBusiness, geocode, saveBusiness, updateBusinessPin, type BusinessInput } from '../../lib/api';
+import { deleteBusiness, geocode, saveBusiness, updateBusinessPin, uploadBusinessLogo, type BusinessInput } from '../../lib/api';
+import { BizBadge } from '../../components/BizBadge';
 import { useAuth } from '../../lib/auth';
 import { useBusinesses } from '../../lib/hooks';
 import { invalidate } from '../../lib/query';
@@ -56,6 +57,7 @@ export default function ManageBusinesses() {
       )}
       {list.map((b) => (
         <button key={b.id} type="button" className="biz-row" onClick={() => setEditing(b)}>
+          <BizBadge business={b} size="sm" />
           <span className="stack-2 grow">
             <strong>{b.name}</strong>
             <span className="tiny muted">{KINDS.find((k) => k.id === b.kind)?.label} in {b.area}</span>
@@ -182,6 +184,9 @@ function BusinessForm({ business, onDone }: { business?: Business; onDone: () =>
   const [phone, setPhone] = useState(business?.phone ?? '');
   const [website, setWebsite] = useState(business?.website ?? '');
   const [offer, setOffer] = useState(business?.offer ?? '');
+  const [logoUrl, setLogoUrl] = useState<string | null>(business?.logoUrl ?? null);
+  const [logoFile, setLogoFile] = useState<File | null>(null);
+  const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const [pos, setPos] = useState<[number, number]>(business ? [business.lat, business.lng] : [27.6, -81.6]);
   const [placed, setPlaced] = useState(Boolean(business));
   const [fly, setFly] = useState<[number, number] | null>(business ? [business.lat, business.lng] : null);
@@ -192,6 +197,23 @@ function BusinessForm({ business, onDone }: { business?: Business; onDone: () =>
   const tiles = cartoKey
     ? `https://{s}.basemaps.cartocdn.com/rastertiles/${theme === 'reef' ? 'light_all' : 'dark_all'}/{z}/{x}/{y}{r}.png?key=${cartoKey}`
     : 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
+
+  const pickLogo = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const f = e.target.files?.[0] ?? null;
+    e.target.value = '';
+    if (!f) return;
+    if (!/^image\/(png|jpeg|webp|svg\+xml)$/.test(f.type)) return setError('Use a PNG, JPG, WebP or SVG logo.');
+    if (f.size > 2 * 1024 * 1024) return setError('That logo is over 2 MB. Export a smaller version, around 512 by 512 pixels.');
+    setError('');
+    setLogoFile(f);
+    setLogoPreview(URL.createObjectURL(f));
+  };
+
+  const removeLogo = () => {
+    setLogoFile(null);
+    setLogoPreview(null);
+    setLogoUrl(null);
+  };
 
   const pick = (p: [number, number]) => {
     setPos(p);
@@ -223,7 +245,8 @@ function BusinessForm({ business, onDone }: { business?: Business; onDone: () =>
     setBusy(true);
     setError('');
     try {
-      const input: BusinessInput = { name, kind, area, address, lat: pos[0], lng: pos[1], phone, website, offer };
+      const finalLogo = logoFile ? await uploadBusinessLogo(logoFile, name) : logoUrl;
+      const input: BusinessInput = { name, kind, area, address, lat: pos[0], lng: pos[1], phone, website, offer, logoUrl: finalLogo };
       await saveBusiness(input, business?.id);
       invalidate('businesses');
       onDone();
@@ -256,6 +279,20 @@ function BusinessForm({ business, onDone }: { business?: Business; onDone: () =>
       </header>
       <form className="form" onSubmit={submit} noValidate>
         <label>Business name<input type="text" value={name} onChange={(e) => setName(e.target.value)} required /></label>
+        <div className="logo-field">
+          <BizBadge business={{ name: name || 'New business', kind, logoUrl: logoPreview ?? logoUrl ?? undefined }} size="lg" />
+          <div className="stack-4 grow">
+            <span className="small-strong">Logo</span>
+            <span className="tiny muted">{logoPreview || logoUrl ? 'Shown on the map card and listings.' : 'No logo yet, so a monogram is shown. Square PNG with a transparent background works best.'}</span>
+            <div className="row gap-8">
+              <label className="btn btn-outline btn-sm file-btn">
+                {logoPreview || logoUrl ? 'Replace' : 'Upload logo'}
+                <input type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" onChange={pickLogo} />
+              </label>
+              {(logoPreview || logoUrl) && <button type="button" className="btn btn-ghost btn-sm" onClick={removeLogo}>Remove</button>}
+            </div>
+          </div>
+        </div>
         <label>Type
           <select value={kind} onChange={(e) => setKind(e.target.value as Business['kind'])}>{KINDS.map((k) => <option key={k.id} value={k.id}>{k.label}</option>)}</select>
         </label>

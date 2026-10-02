@@ -10,6 +10,7 @@ import { toggleSaved, useLocal } from '../lib/store';
 import { KIND_LABEL, milesBetween, relTime } from '../lib/format';
 import type { Site } from '../lib/types';
 import { sitePhoto } from '../lib/photos';
+import { BizBadge } from '../components/BizBadge';
 
 export default function SiteDetail() {
   const { slug } = useParams();
@@ -141,7 +142,8 @@ function SiteView({ site }: { site: Site }) {
           <h2 className="section-title">Nearby shops, charters and resorts</h2>
           {nearby.map((b) => (
             <div key={b.id} className={`biz glass${b.offer ? ' has-offer' : ''}`}>
-              <div>
+              <BizBadge business={b} />
+              <div className="grow">
                 <strong>{b.name}</strong>
                 <p className="tiny muted">{cap(b.kind)} in {b.area}{b.isDemo ? ', example listing' : ''}</p>
                 {b.offer && <p className="small offer">{b.offer}</p>}

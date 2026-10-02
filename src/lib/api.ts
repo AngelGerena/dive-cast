@@ -62,7 +62,7 @@ export async function fetchBusinesses(): Promise<Business[]> {
     id: r.id, name: r.name, kind: r.kind, area: r.area, lat: r.lat, lng: r.lng,
     offer: r.offer ?? undefined, address: r.address ?? undefined, phone: r.phone ?? undefined,
     website: r.website ?? undefined, pinVerified: Boolean(r.pin_verified),
-    source: r.source ?? 'manual', osmId: r.osm_id ?? undefined,
+    source: r.source ?? 'manual', osmId: r.osm_id ?? undefined, logoUrl: r.logo_url ?? undefined,
     claimed: Boolean(r.claimed_by), isDemo: r.is_demo
   }));
 }
@@ -77,13 +77,24 @@ export interface BusinessInput {
   phone?: string;
   website?: string;
   offer?: string;
+  logoUrl?: string | null;
+}
+
+export async function uploadBusinessLogo(file: File, name: string): Promise<string> {
+  const ext = (file.name.split('.').pop() || 'png').toLowerCase().replace(/[^a-z0-9]/g, '');
+  const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40) || 'logo';
+  const path = `${Date.now()}-${slug}.${ext}`;
+  const { error } = await supabase.storage.from('business-logos').upload(path, file, { contentType: file.type || 'image/png', upsert: false, cacheControl: '31536000' });
+  fail(error);
+  return supabase.storage.from('business-logos').getPublicUrl(path).data.publicUrl;
 }
 
 export async function saveBusiness(b: BusinessInput, id?: string) {
   const row = {
     name: b.name.trim(), kind: b.kind, area: b.area.trim(), address: b.address?.trim() || null,
     lat: b.lat, lng: b.lng, phone: b.phone?.trim() || null, website: b.website?.trim() || null,
-    offer: b.offer?.trim() || null, pin_verified: true, is_demo: false
+    offer: b.offer?.trim() || null, pin_verified: true, is_demo: false,
+    ...(b.logoUrl !== undefined ? { logo_url: b.logoUrl } : {})
   };
   const { error } = id ? await supabase.from('businesses').update(row).eq('id', id) : await supabase.from('businesses').insert(row);
   fail(error);

@@ -44,6 +44,7 @@ export interface Business {
   phone?: string;
   website?: string;
   pinVerified?: boolean;
+  logoUrl?: string;
   source?: 'manual' | 'osm';
   osmId?: string;
   claimed: boolean;

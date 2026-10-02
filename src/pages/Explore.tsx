@@ -8,6 +8,7 @@ import { useBusinesses, useSites } from '../lib/hooks';
 import { useLocal } from '../lib/store';
 import { KIND_LABEL } from '../lib/format';
 import { sitePhoto } from '../lib/photos';
+import { BizBadge } from '../components/BizBadge';
 import type { Business } from '../lib/types';
 
 type Layer = 'sites' | 'shop' | 'charter' | 'resort';
@@ -139,7 +140,10 @@ export default function Explore() {
             {BIZ_LABEL[pickBiz.kind]}
             {pickBiz.claimed ? <span className="tag tag-ok">Claimed</span> : <span className="tag">Unclaimed</span>}
           </span>
-          <span className="featured-title">{pickBiz.name}</span>
+          <div className="row gap-14">
+            <BizBadge business={pickBiz} size="lg" />
+            <span className="featured-title">{pickBiz.name}</span>
+          </div>
           <span className="small muted">{pickBiz.address && pickBiz.address !== pickBiz.area ? pickBiz.address : `${pickBiz.area}, Florida`}</span>
           {pickBiz.phone && <span className="small">{pickBiz.phone}</span>}
           {pickBiz.offer && <p className="small offer">{pickBiz.offer}</p>}
@@ -178,7 +182,8 @@ export default function Explore() {
           <h2 className="section-title">{biz.length} shops, charters and resorts</h2>
           {biz.map((b) => (
             <div key={b.id} className={`biz glass${b.offer ? ' has-offer' : ''}`}>
-              <div className="stack-4">
+              <BizBadge business={b} />
+              <div className="stack-4 grow">
                 <strong>{b.name}</strong>
                 <p className="tiny muted">{BIZ_LABEL[b.kind]} in {b.area}</p>
                 {b.address && b.address !== b.area && <p className="tiny muted">{b.address}</p>}
